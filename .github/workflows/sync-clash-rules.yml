@@ -1,0 +1,109 @@
+name: Sync Clash Rules
+
+on:
+  workflow_dispatch:  # 手动触发
+  schedule:
+    - cron: '0 3 * * *'  # 每天凌晨 3 点执行
+
+jobs:
+  sync-rules:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout current repo
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install diff tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y diffutils bc
+
+    - name: Create necessary directories
+      run: |
+        mkdir -p Clash/Microsoft
+        mkdir -p Clash/Apple
+        mkdir -p Clash/Telegram
+        mkdir -p Clash/OpenAI
+        mkdir -p Clash/Media
+        mkdir -p Clash/Game
+        mkdir -p Clash/Others
+        mkdir -p Clash/Ads
+
+    - name: Download and check files
+      id: download-and-compare
+      run: |
+        declare -A file_map
+        file_map["Clash/Microsoft/Microsoft.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Microsoft/Microsoft.list"
+        file_map["Clash/Apple/Apple.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Apple/Apple.list"
+        file_map["Clash/Telegram/Telegram.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Telegram/Telegram.list"
+        file_map["Clash/OpenAI/OpenAI.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/OpenAI/OpenAI.list"
+        file_map["Clash/Media/YouTube.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/YouTube/YouTube.list"
+        file_map["Clash/Media/Netflix.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Netflix/Netflix.list"
+        file_map["Clash/Media/Disney.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Disney/Disney.list"
+        file_map["Clash/Media/Bahamut.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Bahamut/Bahamut.list"
+        file_map["Clash/Media/BiliBili.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/BiliBili/BiliBili.list"
+        file_map["Clash/Game/Game.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Game/Game.list"
+        file_map["Clash/Others/ChinaMax.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/ChinaMax/ChinaMax.list"
+        file_map["Clash/Others/Proxy.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Proxy/Proxy.list"
+        file_map["Clash/Ads/Advertising.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Advertising/Advertising.list"
+
+        HAS_UPDATE=0
+
+        for local_path in "${!file_map[@]}"; do
+          url="${file_map[$local_path]}"
+          temp_file="temp_download.list"
+
+          echo "开始检查 $local_path ..."
+
+          # 下载文件
+          curl -sL "$url" -o "$temp_file"
+
+          # 如果本地文件不存在，视为需要更新
+          if [ ! -f "$local_path" ]; then
+            echo "$local_path 不存在，将下载新文件。"
+            cp "$temp_file" "$local_path"
+            HAS_UPDATE=1
+            continue
+          fi
+
+          # 生成 diff
+          diff -u "$local_path" "$temp_file" > temp_diff.txt || true
+
+          # 计算差异行数
+          DIFF_LINES=$(grep -E "^[+-]" temp_diff.txt | grep -vE "^(---|\+\+\+)" | wc -l)
+          TOTAL_LINES=$(wc -l < "$temp_file")
+          if [ $TOTAL_LINES -eq 0 ]; then TOTAL_LINES=1; fi  # 避免除以 0
+
+          # 差异比例
+          DIFF_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($DIFF_LINES/$TOTAL_LINES)*100}")
+          echo "$local_path 差异比例: $DIFF_PERCENT%"
+
+          # 如果超过 50%，报错退出
+          if (( $(echo "$DIFF_PERCENT > 50" | bc -l) )); then
+            echo "❌ $local_path 差异超过 50%，任务失败！"
+            exit 1
+          fi
+
+          # 如果存在差异但低于 50%，替换文件
+          if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
+            echo "⚙️ $local_path 存在差异，将更新文件。"
+            cp "$temp_file" "$local_path"
+            HAS_UPDATE=1
+          else
+            echo "✅ $local_path 无需更新。"
+          fi
+        done
+
+        # 保存是否有更新的信息
+        echo "has_update=$HAS_UPDATE" >> $GITHUB_OUTPUT
+
+    - name: Commit and push updates
+      if: steps.download-and-compare.outputs.has_update == '1'
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add Clash/
+        git commit -m "自动同步 Clash 规则文件"
+        git push
