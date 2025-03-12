@@ -37,6 +37,7 @@ jobs:
         declare -A file_map
         file_map["Clash/Microsoft/Microsoft.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Microsoft/Microsoft.list"
         file_map["Clash/Apple/Apple.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Apple/Apple.list"
+        file_map["Clash/Apple/AppleTV.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/AppleTV/AppleTV.list"
         file_map["Clash/Telegram/Telegram.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Telegram/Telegram.list"
         file_map["Clash/OpenAI/OpenAI.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/OpenAI/OpenAI.list"
         file_map["Clash/Media/YouTube.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/YouTube/YouTube.list"
