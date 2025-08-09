@@ -1,110 +1,177 @@
+# 工作流名称
 name: Sync Clash Rules
 
 on:
-  workflow_dispatch:  # 手动触发
+  # 允许手动触发
+  workflow_dispatch:
+  # 定时触发：每天格林威治时间凌晨 3 点 (北京时间上午 11 点)
   schedule:
-    - cron: '0 3 * * *'  # 每天凌晨 3 点执行
+    - cron: '0 3 * * *'
 
 jobs:
   sync-rules:
+    # 使用最新的 ubuntu 运行环境
     runs-on: ubuntu-latest
 
     steps:
+    # 1. 检出（下载）你的仓库代码
     - name: Checkout current repo
       uses: actions/checkout@v4
       with:
+        # 获取所有历史记录，以便后续进行比较
         fetch-depth: 0
 
+    # 2. 安装脚本依赖的工具
     - name: Install diff tools
       run: |
         sudo apt-get update
         sudo apt-get install -y diffutils bc
 
+    # 3. 创建存放规则文件的目录
     - name: Create necessary directories
       run: |
+        mkdir -p Clash/AI
         mkdir -p Clash/Microsoft
         mkdir -p Clash/Apple
         mkdir -p Clash/Telegram
-        mkdir -p Clash/OpenAI
         mkdir -p Clash/Media
         mkdir -p Clash/Game
         mkdir -p Clash/Others
         mkdir -p Clash/Ads
 
+    # 4. 下载、合并、比较和更新规则文件
     - name: Download and check files
       id: download-and-compare
       run: |
-        declare -A file_map
-        file_map["Clash/Microsoft/Microsoft.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Microsoft/Microsoft.list"
-        file_map["Clash/Apple/Apple.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Apple/Apple.list"
-        file_map["Clash/Apple/AppleTV.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/AppleTV/AppleTV.list"
-        file_map["Clash/Telegram/Telegram.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Telegram/Telegram.list"
-        file_map["Clash/OpenAI/OpenAI.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/OpenAI/OpenAI.list"
-        file_map["Clash/Media/YouTube.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/YouTube/YouTube.list"
-        file_map["Clash/Media/Netflix.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Netflix/Netflix.list"
-        file_map["Clash/Media/Disney.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Disney/Disney.list"
-        file_map["Clash/Media/Bahamut.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Bahamut/Bahamut.list"
-        file_map["Clash/Media/BiliBili.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/BiliBili/BiliBili.list"
-        file_map["Clash/Game/Game.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Game/Game.list"
-        file_map["Clash/Others/ChinaMax.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/ChinaMax/ChinaMax.list"
-        file_map["Clash/Others/Proxy.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Proxy/Proxy.list"
-        file_map["Clash/Ads/Advertising.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Advertising/Advertising.list"
-
+        # 初始化更新标志
         HAS_UPDATE=0
+        # 获取当前时间
+        CURRENT_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+        # --- 步骤 A: 处理聚合的 AI 规则 ---
+        echo "--- 开始处理 AI 聚合规则 ---"
+        AI_SOURCES=(
+          "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.list"
+          "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Gemini/Gemini.list"
+          "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Claude/Claude.list"
+          "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Copilot/Copilot.list"
+        )
+        AI_LOCAL_PATH="Clash/AI/AI.list"
+        TEMP_AI_RAW="temp_ai_raw.list"
+        TEMP_AI_FINAL="temp_ai_final.list"
+
+        echo "正在下载并合并 AI 规则..."
+        > "$TEMP_AI_RAW"
+        for url in "${AI_SOURCES[@]}"; do
+          curl -sL "$url" >> "$TEMP_AI_RAW"
+        done
+
+        # 清理合并后的文件：添加指定文件头，移除所有旧注释和空行，排序并去重
+        {
+          echo "# NAME: AI (Aggregated)"
+          echo "# REPO: https://github.com/${{ github.repository }}"
+          echo "# UPDATED: $CURRENT_TIME"
+          grep -vE '^#|^$' "$TEMP_AI_RAW" | sort -u
+        } > "$TEMP_AI_FINAL"
+
+        echo "AI 规则聚合完成，开始比对差异..."
+        if [ ! -f "$AI_LOCAL_PATH" ]; then
+          echo "$AI_LOCAL_PATH 不存在，将创建新文件。"
+          cp "$TEMP_AI_FINAL" "$AI_LOCAL_PATH"
+          HAS_UPDATE=1
+        else
+          diff -u "$AI_LOCAL_PATH" "$TEMP_AI_FINAL" > temp_diff.txt || true
+          DIFF_LINES=$(grep -E "^[+-]" temp_diff.txt | grep -vE "^(---|\+\+\+)" | wc -l)
+          TOTAL_LINES=$(wc -l < "$TEMP_AI_FINAL")
+          if [ $TOTAL_LINES -eq 0 ]; then TOTAL_LINES=1; fi
+          DIFF_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($DIFF_LINES/$TOTAL_LINES)*100}")
+          echo "$AI_LOCAL_PATH 差异比例: $DIFF_PERCENT%"
+
+          if (( $(echo "$DIFF_PERCENT > 50" | bc -l) )); then
+            echo "❌ $AI_LOCAL_PATH 差异超过 50%，任务失败！"
+            exit 1
+          fi
+          if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
+            echo "⚙️ $AI_LOCAL_PATH 存在差异，将更新文件。"
+            cp "$TEMP_AI_FINAL" "$AI_LOCAL_PATH"
+            HAS_UPDATE=1
+          else
+            echo "✅ $AI_LOCAL_PATH 无需更新。"
+          fi
+        fi
+
+        # --- 步骤 B: 处理其他独立规则 ---
+        echo ""
+        echo "--- 开始处理其他独立规则 ---"
+        declare -A file_map
+        file_map["Clash/Microsoft/Microsoft.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.list"
+        file_map["Clash/Apple/Apple.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.list"
+        file_map["Clash/Apple/AppleTV.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AppleTV/AppleTV.list"
+        file_map["Clash/Telegram/Telegram.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.list"
+        file_map["Clash/Media/YouTube.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.list"
+        file_map["Clash/Media/Netflix.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.list"
+        file_map["Clash/Media/Disney.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Disney/Disney.list"
+        file_map["Clash/Media/Bahamut.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bahamut/Bahamut.list"
+        file_map["Clash/Media/BiliBili.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.list"
+        file_map["Clash/Game/Game.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/Game.list"
+        file_map["Clash/Others/ChinaMax.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMax/ChinaMax.list"
+        file_map["Clash/Others/Lan.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.yaml"
+        file_map["Clash/Ads/Advertising.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.list"
 
         for local_path in "${!file_map[@]}"; do
           url="${file_map[$local_path]}"
-          temp_file="temp_download.list"
+          temp_raw_file="temp_download_raw.list"
+          temp_processed_file="temp_download_processed.list"
 
-          echo "开始检查 $local_path ..."
+          echo "开始处理 $local_path ..."
+          curl -sL "$url" -o "$temp_raw_file"
 
-          # 下载文件
-          curl -sL "$url" -o "$temp_file"
+          # 提取原始 NAME, 然后生成新的文件头
+          ORIGINAL_NAME=$(grep '^# NAME:' "$temp_raw_file" | sed 's/# NAME: //')
+          {
+            echo "# NAME: $ORIGINAL_NAME"
+            echo "# REPO: https://github.com/${{ github.repository }}"
+            echo "# UPDATED: $CURRENT_TIME"
+            grep -vE '^#|^$' "$temp_raw_file"
+          } > "$temp_processed_file"
 
-          # 如果本地文件不存在，视为需要更新
+          # 使用处理过的、干净的文件进行比较
           if [ ! -f "$local_path" ]; then
             echo "$local_path 不存在，将下载新文件。"
-            cp "$temp_file" "$local_path"
+            cp "$temp_processed_file" "$local_path"
             HAS_UPDATE=1
             continue
           fi
 
-          # 生成 diff
-          diff -u "$local_path" "$temp_file" > temp_diff.txt || true
-
-          # 计算差异行数
+          diff -u "$local_path" "$temp_processed_file" > temp_diff.txt || true
           DIFF_LINES=$(grep -E "^[+-]" temp_diff.txt | grep -vE "^(---|\+\+\+)" | wc -l)
-          TOTAL_LINES=$(wc -l < "$temp_file")
-          if [ $TOTAL_LINES -eq 0 ]; then TOTAL_LINES=1; fi  # 避免除以 0
-
-          # 差异比例
+          TOTAL_LINES=$(wc -l < "$temp_processed_file")
+          if [ $TOTAL_LINES -eq 0 ]; then TOTAL_LINES=1; fi
           DIFF_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($DIFF_LINES/$TOTAL_LINES)*100}")
           echo "$local_path 差异比例: $DIFF_PERCENT%"
 
-          # 如果超过 50%，报错退出
           if (( $(echo "$DIFF_PERCENT > 50" | bc -l) )); then
             echo "❌ $local_path 差异超过 50%，任务失败！"
             exit 1
           fi
-
-          # 如果存在差异但低于 50%，替换文件
           if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
             echo "⚙️ $local_path 存在差异，将更新文件。"
-            cp "$temp_file" "$local_path"
+            cp "$temp_processed_file" "$local_path"
             HAS_UPDATE=1
           else
             echo "✅ $local_path 无需更新。"
           fi
         done
 
-        # 保存是否有更新的信息
         echo "has_update=$HAS_UPDATE" >> $GITHUB_OUTPUT
+        rm -f temp_*.list temp_diff.txt
 
+    # 5. 如果有文件更新，则提交并推送到仓库
     - name: Commit and push updates
       if: steps.download-and-compare.outputs.has_update == '1'
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git add Clash/
-        git commit -m "自动同步 Clash 规则文件"
-        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+        git commit -m "chore(rules): 自动同步并格式化 Clash 规则文件"
+        git push
