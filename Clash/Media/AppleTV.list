@@ -1,6 +1,6 @@
 # NAME: AppleTV
 # REPO: https://github.com/shenyefan/rule
-# UPDATED: 2025-09-03 03:11:48 UTC
+# UPDATED: 2025-09-04 03:12:09 UTC
 DOMAIN,hls-amt.itunes.apple.com
 DOMAIN,hls.itunes.apple.com
 DOMAIN,np-edge.itunes.apple.com
