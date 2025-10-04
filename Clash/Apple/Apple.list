@@ -1,6 +1,6 @@
 # NAME: Apple
 # REPO: https://github.com/shenyefan/rule
-# UPDATED: 2025-10-03 03:13:17 UTC
+# UPDATED: 2025-10-04 03:09:54 UTC
 DOMAIN,appldnld.apple.com.edgesuite.net
 DOMAIN,apple-events.akamaized.net
 DOMAIN,appleworldwidedeveloper.hb-api.omtrdc.net
@@ -1194,7 +1194,6 @@ DOMAIN-SUFFIX,applepaysupplies.net
 DOMAIN-SUFFIX,applepaysupplies.tv
 DOMAIN-SUFFIX,applewallet.com
 DOMAIN-SUFFIX,applewallet.tv
-DOMAIN-SUFFIX,appsto.re
 DOMAIN-SUFFIX,appstore.co.id
 DOMAIN-SUFFIX,appstore.com
 DOMAIN-SUFFIX,appstore.hk
@@ -1555,11 +1554,12 @@ DOMAIN-SUFFIX,iphoto.wang
 DOMAIN-SUFFIX,musickit.net
 DOMAIN-SUFFIX,wwwapplemusic.com
 DOMAIN-SUFFIX,apple-dns.net
+DOMAIN-SUFFIX,appsto.re
+DOMAIN-SUFFIX,cdn-apple.com
 DOMAIN-SUFFIX,digicert.com
 DOMAIN-SUFFIX,apple-cloudkit.com
 DOMAIN-SUFFIX,apple-livephotoskit.com
 DOMAIN-SUFFIX,apzones.com
-DOMAIN-SUFFIX,cdn-apple.com
 DOMAIN-KEYWORD,apple-support.akadns.net
 DOMAIN-KEYWORD,apple.com.akadns.net
 DOMAIN-KEYWORD,apple.com.edgekey.net
