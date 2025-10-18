@@ -1,6 +1,6 @@
 # NAME: Game
 # REPO: https://github.com/shenyefan/rule
-# UPDATED: 2025-10-17 03:17:27 UTC
+# UPDATED: 2025-10-18 03:12:37 UTC
 DOMAIN,eaasserts-a.akamaihd.net
 DOMAIN,originasserts.akamaized.net
 DOMAIN,gog.salesmanago.com
@@ -569,7 +569,6 @@ IP-CIDR,35.192.0.0/12,no-resolve
 IP-CIDR,203.66.81.98/32,no-resolve
 IP-CIDR,211.234.110.1/32,no-resolve
 IP-CIDR,54.207.107.12/32,no-resolve
-IP-CIDR,185.60.114.159/32,no-resolve
 IP-CIDR,202.9.67.254/32,no-resolve
 IP-CIDR,222.231.22.1/32,no-resolve
 IP-CIDR,13.210.25.233/32,no-resolve
@@ -596,5 +595,6 @@ IP-CIDR,54.207.168.84/32,no-resolve
 IP-CIDR,54.248.64.192/32,no-resolve
 IP-CIDR,103.4.115.248/32,no-resolve
 IP-CIDR,137.221.105.2/32,no-resolve
+IP-CIDR,185.60.114.159/32,no-resolve
 IP-CIDR,210.71.148.11/32,no-resolve
 IP-CIDR,211.115.104.1/32,no-resolve
