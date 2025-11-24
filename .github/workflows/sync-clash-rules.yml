@@ -47,52 +47,60 @@ jobs:
         # 获取当前时间
         CURRENT_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
 
-        # --- 步骤 A: 使用 kelee.one 的 LSR AI 规则 ---
-        echo "--- 开始处理 AI 规则 (kelee.one LSR) ---"
-        AI_URL="https://kelee.one/Tool/Loon/Lsr/AI.lsr"
-        AI_LOCAL_PATH="Clash/AI/AI.list"
-        TEMP_AI_RAW="temp_ai_raw.list"
-        TEMP_AI_FINAL="temp_ai_final.list"
+        # --- 步骤 A: 处理聚合的 AI 规则 ---
+        ; echo "--- 开始处理 AI 聚合规则 ---"
+        ; AI_SOURCES=(
+        ;   "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.list"
+        ;   "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Gemini/Gemini.list"
+        ;   "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Claude/Claude.list"
+        ;   "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Copilot/Copilot.list"
+        ; )
+        ; AI_LOCAL_PATH="Clash/AI/AI.list"
+        ; TEMP_AI_RAW="temp_ai_raw.list"
+        ; TEMP_AI_FINAL="temp_ai_final.list"
 
-        echo "正在下载 AI 规则 (设置 UA)..."
-        curl -sL -H 'User-Agent: Loon/649 CFNetwork/1492.0.1 Darwin/23.3.0' "$AI_URL" -o "$TEMP_AI_RAW"
+        ; echo "正在下载并合并 AI 规则..."
+        ; > "$TEMP_AI_RAW"
+        ; for url in "${AI_SOURCES[@]}"; do
+        ;   curl -sL "$url" >> "$TEMP_AI_RAW"
+        ; done
 
-        # 清理合并后的文件：添加指定文件头，移除所有旧注释和空行，排序并去重
-        {
-          echo "# NAME: AI (Aggregated)"
-          echo "# REPO: https://github.com/${{ github.repository }}"
-          echo "# UPDATED: $CURRENT_TIME"
-          grep -vE '^#|^$' "$TEMP_AI_RAW" | sort -u
-        } > "$TEMP_AI_FINAL"
+        ; # 清理合并后的文件：添加指定文件头，移除所有旧注释和空行，排序并去重
+        ; {
+        ;   echo "# NAME: AI (Aggregated)"
+        ;   echo "# REPO: https://github.com/${{ github.repository }}"
+        ;   echo "# UPDATED: $CURRENT_TIME"
+        ;   grep -vE '^#|^$' "$TEMP_AI_RAW" | sort -u
+        ; } > "$TEMP_AI_FINAL"
 
-        echo "AI 规则下载完成，开始比对差异..."
-        if [ ! -f "$AI_LOCAL_PATH" ]; then
-          echo "$AI_LOCAL_PATH 不存在，将创建新文件。"
-          cp "$TEMP_AI_FINAL" "$AI_LOCAL_PATH"
-          HAS_UPDATE=1
-        else
-          diff -u "$AI_LOCAL_PATH" "$TEMP_AI_FINAL" > temp_diff.txt || true
-          DIFF_LINES=$(grep -E "^[+-]" temp_diff.txt | grep -vE "^(---|\+\+\+)" | wc -l)
-          TOTAL_LINES=$(wc -l < "$TEMP_AI_FINAL")
-          if [ $TOTAL_LINES -eq 0 ]; then TOTAL_LINES=1; fi
-          DIFF_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($DIFF_LINES/$TOTAL_LINES)*100}")
-          echo "$AI_LOCAL_PATH 差异比例: $DIFF_PERCENT%"
+        ; echo "AI 规则聚合完成，开始比对差异..."
+        ; if [ ! -f "$AI_LOCAL_PATH" ]; then
+        ;   echo "$AI_LOCAL_PATH 不存在，将创建新文件。"
+        ;   cp "$TEMP_AI_FINAL" "$AI_LOCAL_PATH"
+        ;   HAS_UPDATE=1
+        ; else
+        ;   diff -u "$AI_LOCAL_PATH" "$TEMP_AI_FINAL" > temp_diff.txt || true
+        ;   DIFF_LINES=$(grep -E "^[+-]" temp_diff.txt | grep -vE "^(---|\+\+\+)" | wc -l)
+        ;   TOTAL_LINES=$(wc -l < "$TEMP_AI_FINAL")
+        ;   if [ $TOTAL_LINES -eq 0 ]; then TOTAL_LINES=1; fi
+        ;   DIFF_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($DIFF_LINES/$TOTAL_LINES)*100}")
+        ;   echo "$AI_LOCAL_PATH 差异比例: $DIFF_PERCENT%"
 
-          if (( $(echo "$DIFF_PERCENT > 50" | bc -l) )); then
-            echo "❌ $AI_LOCAL_PATH 差异超过 50%，打印获取的内容后退出"
-            echo "----- BEGIN FETCHED AI RAW -----"
-            cat "$TEMP_AI_RAW"
-            echo "----- END FETCHED AI RAW -----"
-            exit 1
-          fi
-          if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
-            echo "⚙️ $AI_LOCAL_PATH 存在差异，将更新文件。"
-            cp "$TEMP_AI_FINAL" "$AI_LOCAL_PATH"
-            HAS_UPDATE=1
-          else
-            echo "✅ $AI_LOCAL_PATH 无需更新。"
-          fi
-        fi
+        ;   if (( $(echo "$DIFF_PERCENT > 50" | bc -l) )); then
+        ;     echo "❌ $AI_LOCAL_PATH 差异超过 50%，打印获取的内容后退出"
+        ;     echo "----- BEGIN FETCHED AI RAW -----"
+        ;     cat "$TEMP_AI_RAW"
+        ;     echo "----- END FETCHED AI RAW -----"
+        ;     exit 1
+        ;   fi
+        ;   if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
+        ;     echo "⚙️ $AI_LOCAL_PATH 存在差异，将更新文件。"
+        ;     cp "$TEMP_AI_FINAL" "$AI_LOCAL_PATH"
+        ;     HAS_UPDATE=1
+        ;   else
+        ;     echo "✅ $AI_LOCAL_PATH 无需更新。"
+        ;   fi
+        ; fi
 
         # --- 步骤 B: 处理其他独立规则 ---
         echo ""
@@ -108,7 +116,7 @@ jobs:
         file_map["Clash/Media/Bahamut.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bahamut/Bahamut.list"
         file_map["Clash/Media/BiliBili.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.list"
         file_map["Clash/Game/Game.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/Game.list"
-        file_map["Clash/Game/SteamCN.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/SteamCN/SteamCN.list"
+        file_map["Clash/Game/Game.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/SteamCN/SteamCN.list"
         file_map["Clash/Ads/Advertising.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.list"
 
         for local_path in "${!file_map[@]}"; do
@@ -144,10 +152,10 @@ jobs:
           echo "$local_path 差异比例: $DIFF_PERCENT%"
 
           if (( $(echo "$DIFF_PERCENT > 50" | bc -l) )); then
-            echo "❌ $local_path 差异超过 50%，打印获取的内容后退出"
-            echo "----- BEGIN FETCHED RAW -----"
-            cat "$temp_raw_file"
-            echo "----- END FETCHED RAW -----"
+            echo "❌ $AI_LOCAL_PATH 差异超过 50%，打印获取的内容后退出"
+            echo "----- BEGIN FETCHED AI RAW -----"
+            cat "$TEMP_AI_RAW"
+            echo "----- END FETCHED AI RAW -----"
             exit 1
           fi
           if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
