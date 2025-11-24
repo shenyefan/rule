@@ -79,7 +79,10 @@ jobs:
           echo "$AI_LOCAL_PATH 差异比例: $DIFF_PERCENT%"
 
           if (( $(echo "$DIFF_PERCENT > 50" | bc -l) )); then
-            echo "❌ $AI_LOCAL_PATH 差异超过 50%，任务失败！"
+            echo "❌ $AI_LOCAL_PATH 差异超过 50%，打印获取的内容后退出"
+            echo "----- BEGIN FETCHED AI RAW -----"
+            cat "$TEMP_AI_RAW"
+            echo "----- END FETCHED AI RAW -----"
             exit 1
           fi
           if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
@@ -141,7 +144,10 @@ jobs:
           echo "$local_path 差异比例: $DIFF_PERCENT%"
 
           if (( $(echo "$DIFF_PERCENT > 50" | bc -l) )); then
-            echo "❌ $local_path 差异超过 50%，任务失败！"
+            echo "❌ $local_path 差异超过 50%，打印获取的内容后退出"
+            echo "----- BEGIN FETCHED RAW -----"
+            cat "$temp_raw_file"
+            echo "----- END FETCHED RAW -----"
             exit 1
           fi
           if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
