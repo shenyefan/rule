@@ -36,6 +36,7 @@ jobs:
         mkdir -p Clash/Telegram
         mkdir -p Clash/Media
         mkdir -p Clash/Game
+        mkdir -p Clash/Google
         mkdir -p Clash/Ads
 
     # 4. 下载、合并、比较和更新规则文件
@@ -115,6 +116,7 @@ jobs:
         file_map["Clash/Media/Disney.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Disney/Disney.list"
         file_map["Clash/Media/Bahamut.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bahamut/Bahamut.list"
         file_map["Clash/Media/BiliBili.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.list"
+        file_map["Clash/Google/Google.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.list"
         file_map["Clash/Game/Game.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Game/Game.list"
         file_map["Clash/Game/SteamCN.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/SteamCN/SteamCN.list"
         file_map["Clash/Ads/Advertising.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Advertising/Advertising.list"
