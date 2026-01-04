@@ -1,0 +1,351 @@
+proxy-groups:
+  - name: Meow
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Proxy.png
+    include-all: true
+    type: select
+
+  - name: AdBlock
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Ad.png
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+
+  - name: AI
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/AI.png
+    type: select
+    proxies:
+      - Meow
+      - United States
+      - Japan
+      - Singapore
+      - Korea
+      - DIRECT
+
+  - name: Apple
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Apple.png
+    type: select
+    proxies:
+      - DIRECT
+      - Hong Kong
+      - Taiwan
+      - Japan
+      - United States
+      - Singapore
+      - Korea
+      - Meow
+
+  - name: Microsoft
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Microsoft.png
+    type: select
+    proxies:
+      - DIRECT
+      - Hong Kong
+      - Taiwan
+      - Japan
+      - United States
+      - Singapore
+      - Korea
+      - Meow
+
+  - name: Google
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Google.png
+    type: select
+    proxies:
+      - Hong Kong
+      - Taiwan
+      - Japan
+      - United States
+      - Singapore
+      - Korea
+      - Meow
+      - DIRECT
+
+  - name: Telegram
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Telegram.png
+    type: select
+    proxies:
+      - Hong Kong
+      - Taiwan
+      - Japan
+      - United States
+      - Singapore
+      - Korea
+      - Meow
+      - DIRECT
+
+  - name: AppleTV
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/AppleTV.png
+    type: select
+    proxies:
+      - Hong Kong
+      - Taiwan
+      - Japan
+      - United States
+      - Singapore
+      - Korea
+      - Meow
+      - DIRECT
+
+  - name: YouTube
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/YouTube.png
+    type: select
+    proxies:
+      - Hong Kong
+      - Taiwan
+      - Japan
+      - United States
+      - Singapore
+      - Korea
+      - Meow
+      - DIRECT
+
+  - name: Netflix
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Netflix.png
+    type: select
+    proxies:
+      - Hong Kong
+      - Taiwan
+      - Japan
+      - United States
+      - Singapore
+      - Korea
+      - Meow
+      - DIRECT
+
+  - name: Disney
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Disney.png
+    type: select
+    proxies:
+      - Hong Kong
+      - Taiwan
+      - Japan
+      - United States
+      - Singapore
+      - Korea
+      - Meow
+      - DIRECT
+
+  - name: Bahamut
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Bahamut.png
+    type: select
+    proxies:
+      - Taiwan
+      - Hong Kong
+      - Meow
+      - DIRECT
+
+  - name: Bilibili
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Bilibili.png
+    type: select
+    proxies:
+      - DIRECT
+      - Taiwan
+      - Hong Kong
+      - Meow
+
+  - name: SteamCN
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Steam.png
+    type: select
+    proxies:
+      - DIRECT
+      - Hong Kong
+      - Taiwan
+      - Japan
+      - United States
+      - Singapore
+      - Korea
+      - Meow
+
+  - name: Game
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Game.png
+    type: select
+    proxies:
+      - Meow
+      - Hong Kong
+      - Taiwan
+      - Japan
+      - United States
+      - Singapore
+      - Korea
+      - DIRECT
+
+  - name: Hong Kong
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/HK.png
+    include-all: true
+    filter: (?i)港|HK|hk|Hong Kong|Hong Kong|Hong Kong
+    type: url-test
+    interval: 300
+    tolerance: 50
+
+  - name: Taiwan
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/TW.png
+    include-all: true
+    filter: (?i)台|新北|彰化|TW|Taiwan
+    type: url-test
+    interval: 300
+    tolerance: 50
+
+  - name: Japan
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/JP.png
+    include-all: true
+    filter: (?i)日本|川日|东京|大阪|泉日|埼玉|沪日|深日|JP|Japan
+    type: url-test
+    interval: 300
+    tolerance: 50
+
+  - name: United States
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/US.png
+    include-all: true
+    filter: (?i)美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|United States
+    type: url-test
+    interval: 300
+    tolerance: 50
+
+  - name: Singapore
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/SG.png
+    include-all: true
+    filter: (?i)新加坡|坡|狮城|SG|Singapore
+    type: url-test
+    interval: 300
+    tolerance: 50
+
+  - name: Korea
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/KR.png
+    include-all: true
+    filter: (?i)KR|Korea|KOR|首尔|韩|韓
+    type: url-test
+    interval: 300
+    tolerance: 50
+
+rule-providers:
+  AdBlock:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Ads/Advertising.list
+    path: ./ruleset/Ads/Advertising.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+  
+  AI:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/AI/AI.list
+    path: ./ruleset/AI/AI.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  Apple:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Apple/Apple.list
+    path: ./ruleset/Apple/Apple.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  Microsoft:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Microsoft/Microsoft.list
+    path: ./ruleset/Microsoft/Microsoft.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  Google:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Google/Google.list
+    path: ./ruleset/Google/Google.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  Telegram:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Telegram/Telegram.list
+    path: ./ruleset/Telegram/Telegram.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  AppleTV:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Media/AppleTV.list
+    path: ./ruleset/Media/AppleTV.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  YouTube:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Media/YouTube.list
+    path: ./ruleset/Media/YouTube.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  Netflix:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Media/Netflix.list
+    path: ./ruleset/Media/Netflix.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  Disney:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Media/Disney.list
+    path: ./ruleset/Media/Disney.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  Bahamut:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Media/Bahamut.list
+    path: ./ruleset/Media/Bahamut.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  Bilibili:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Media/Bilibili.list
+    path: ./ruleset/Media/Bilibili.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  SteamCN:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Game/SteamCN.list
+    path: ./ruleset/Game/SteamCN.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+  Game:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Game/Game.list
+    path: ./ruleset/Game/Game.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
+rules:
+  - "GEOIP,LAN,DIRECT"
+  - "RULE-SET,AdBlock,AdBlock"
+  - "RULE-SET,AI,AI"
+  - "RULE-SET,Apple,Apple"
+  - "RULE-SET,Microsoft,Microsoft"
+  - "RULE-SET,Google,Google"
+  - "RULE-SET,Telegram,Telegram"
+  - "RULE-SET,AppleTV,AppleTV"
+  - "RULE-SET,YouTube,YouTube"
+  - "RULE-SET,Netflix,Netflix"
+  - "RULE-SET,Disney,Disney"
+  - "RULE-SET,Bahamut,Bahamut"
+  - "RULE-SET,Bilibili,Bilibili"
+  - "RULE-SET,SteamCN,SteamCN"
+  - "RULE-SET,Game,Game"
+  - "GEOIP,CN,DIRECT"
+  - "MATCH,Meow"
