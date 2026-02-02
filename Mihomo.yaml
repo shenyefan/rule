@@ -7,7 +7,7 @@ proxy-groups:
   - name: Dialer
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Hijacking.png
     type: select
-    include:
+    use:
       - /^Dialer\s.*$/
       
   - name: AdBlock
