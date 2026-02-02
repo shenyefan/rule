@@ -4,11 +4,11 @@ proxy-groups:
     include-all: true
     type: select
 
-  - name: Dialer
+  - name: Land
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Hijacking.png
     type: select
     include-all: true
-    filter: (?i)Dialer -
+    filter: (?i)Land -
       
   - name: AdBlock
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Ad.png
@@ -26,7 +26,7 @@ proxy-groups:
       - Japan
       - Singapore
       - Korea
-      - Dialer
+      - Land
       - DIRECT
 
   - name: Apple
@@ -40,7 +40,7 @@ proxy-groups:
       - United States
       - Singapore
       - Korea
-      - Dialer
+      - Land
       - Meow
 
   - name: Microsoft
@@ -54,7 +54,7 @@ proxy-groups:
       - United States
       - Singapore
       - Korea
-      - Dialer
+      - Land
       - Meow
 
   - name: Google
@@ -68,7 +68,7 @@ proxy-groups:
       - Singapore
       - Korea
       - Meow
-      - Dialer
+      - Land
       - DIRECT
 
   - name: Telegram
@@ -82,7 +82,7 @@ proxy-groups:
       - Singapore
       - Korea
       - Meow
-      - Dialer
+      - Land
       - DIRECT
 
   - name: AppleTV
@@ -96,7 +96,7 @@ proxy-groups:
       - Singapore
       - Korea
       - Meow
-      - Dialer
+      - Land
       - DIRECT
 
   - name: YouTube
@@ -110,7 +110,7 @@ proxy-groups:
       - Singapore
       - Korea
       - Meow
-      - Dialer
+      - Land
       - DIRECT
 
   - name: Netflix
@@ -124,7 +124,7 @@ proxy-groups:
       - Singapore
       - Korea
       - Meow
-      - Dialer
+      - Land
       - DIRECT
 
   - name: Disney
@@ -138,7 +138,7 @@ proxy-groups:
       - Singapore
       - Korea
       - Meow
-      - Dialer
+      - Land
       - DIRECT
 
   - name: Bahamut
@@ -148,7 +148,7 @@ proxy-groups:
       - Taiwan
       - Hong Kong
       - Meow
-      - Dialer
+      - Land
       - DIRECT
 
   - name: Bilibili
@@ -158,7 +158,7 @@ proxy-groups:
       - DIRECT
       - Taiwan
       - Hong Kong
-      - Dialer
+      - Land
       - Meow
 
   - name: SteamCN
@@ -172,7 +172,7 @@ proxy-groups:
       - United States
       - Singapore
       - Korea
-      - Dialer
+      - Land
       - Meow
 
   - name: Game
@@ -186,7 +186,7 @@ proxy-groups:
       - United States
       - Singapore
       - Korea
-      - Dialer
+      - Land
       - DIRECT
 
   - name: Hong Kong
