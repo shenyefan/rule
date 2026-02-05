@@ -204,7 +204,7 @@ proxy-groups:
   - name: Hong Kong
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/HK.png
     include-all: true
-    filter: (?i)港|HK|hk|Hong Kong|Hong Kong|Hong Kong
+    filter: (?i)港|HK|hk|Hong Kong|HongKong|hongkong
     type: url-test
     interval: 300
     tolerance: 50
@@ -228,7 +228,7 @@ proxy-groups:
   - name: United States
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/US.png
     include-all: true
-    filter: (?i)美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|United States
+    filter: (?i)(美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|\bUS|United States)
     type: url-test
     interval: 300
     tolerance: 50
