@@ -33,6 +33,7 @@ jobs:
         mkdir -p Rules/AI
         mkdir -p Rules/Microsoft
         mkdir -p Rules/Apple
+        mkdir -p Rules/PayPal
         mkdir -p Rules/Telegram
         mkdir -p Rules/Media
         mkdir -p Rules/Game
@@ -109,6 +110,7 @@ jobs:
         declare -A file_map
         file_map["Rules/Apple/Apple.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.list"
         file_map["Rules/Microsoft/Microsoft.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.list"
+        file_map["Rules/PayPal/PayPal.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/PayPal/PayPal.list"
         file_map["Rules/Telegram/Telegram.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.list"
         file_map["Rules/Media/AppleTV.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AppleTV/AppleTV.list"
         file_map["Rules/Media/YouTube.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.list"
