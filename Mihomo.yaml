@@ -22,11 +22,23 @@ proxy-groups:
     type: select
     proxies:
       - Meow
+      - Land
       - United States
       - Japan
       - Singapore
       - Korea
+      - DIRECT
+      
+  - name: PayPal
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/PayPal.png
+    type: select
+    proxies:
+      - Meow
       - Land
+      - United States
+      - Japan
+      - Singapore
+      - Korea
       - DIRECT
 
   - name: Apple
@@ -253,7 +265,15 @@ rule-providers:
     interval: 86400
     format: text
     type: http
-
+    
+  PayPal:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/PayPal/PayPal.list
+    path: ./ruleset/PayPal/PayPal.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+    
   Apple:
     url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Apple/Apple.list
     path: ./ruleset/Apple/Apple.list
@@ -354,6 +374,7 @@ rules:
   - "GEOIP,LAN,DIRECT"
   - "RULE-SET,AdBlock,AdBlock"
   - "RULE-SET,AI,AI"
+  - "RULE-SET,PayPal,PayPal"
   - "RULE-SET,Apple,Apple"
   - "RULE-SET,Microsoft,Microsoft"
   - "RULE-SET,Google,Google"
