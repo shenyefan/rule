@@ -1,6 +1,6 @@
 # NAME: Google
 # REPO: https://github.com/shenyefan/rule
-# UPDATED: 2026-02-07 03:46:26 UTC
+# UPDATED: 2026-02-08 03:59:29 UTC
 DOMAIN,voice.telephony.goog
 DOMAIN-SUFFIX,0emm.com
 DOMAIN-SUFFIX,1e100.net
