@@ -4,30 +4,29 @@ name: Sync Rules
 on:
   # 允许手动触发
   workflow_dispatch:
-  # 定时触发：每天格林威治时间凌晨 3 点 (北京时间上午 11 点)
+  # 定时触发
   schedule:
     - cron: '0 3 * * *'
 
 jobs:
   sync-rules:
-    # 使用最新的 ubuntu 运行环境
     runs-on: ubuntu-latest
 
     steps:
-    # 1. 检出（下载）你的仓库代码
+    # 下载仓库代码
     - name: Checkout current repo
       uses: actions/checkout@v4
       with:
-        # 获取所有历史记录，以便后续进行比较
+        # 获取历史记录
         fetch-depth: 0
 
-    # 2. 安装脚本依赖的工具
+    # 安装依赖
     - name: Install diff tools
       run: |
         sudo apt-get update
         sudo apt-get install -y diffutils bc
 
-    # 3. 创建存放规则文件的目录
+    # 创建目录
     - name: Create necessary directories
       run: |
         mkdir -p Rules/AI
@@ -41,17 +40,17 @@ jobs:
         mkdir -p Rules/Google
         mkdir -p Rules/Ads
 
-    # 4. 下载、合并、比较和更新规则文件
+    # 处理规则
     - name: Download and check files
       id: download-and-compare
       run: |
         # 初始化更新标志
         HAS_UPDATE=0
+        UPDATED_FILES=""
         # 获取当前时间
         CURRENT_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
 
-        # --- 步骤 A: 处理聚合的 AI 规则 ---
-        # echo "--- 开始处理 AI 聚合规则 ---"
+        # 处理AI规则
         # AI_SOURCES=(
         #   "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.list"
         #   "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Gemini/Gemini.list"
@@ -68,7 +67,7 @@ jobs:
         #   curl -sL "$url" >> "$TEMP_AI_RAW"
         # done
 
-        # # 清理合并后的文件：添加指定文件头，移除所有旧注释和空行，排序并去重
+        # # 清理合并后的文件
         # {
         #   echo "# NAME: AI (Aggregated)"
         #   echo "# REPO: https://github.com/${{ github.repository }}"
@@ -76,9 +75,8 @@ jobs:
         #   grep -vE '^#|^$' "$TEMP_AI_RAW" | sort -u
         # } > "$TEMP_AI_FINAL"
 
-        # echo "AI 规则聚合完成，开始比对差异..."
         # if [ ! -f "$AI_LOCAL_PATH" ]; then
-        #   echo "$AI_LOCAL_PATH 不存在，将创建新文件。"
+        #   echo "$AI_LOCAL_PATH 下载中..."
         #   cp "$TEMP_AI_FINAL" "$AI_LOCAL_PATH"
         #   HAS_UPDATE=1
         # else
@@ -90,25 +88,23 @@ jobs:
         #   echo "$AI_LOCAL_PATH 差异比例: $DIFF_PERCENT%"
 
         #   if (( $(echo "$DIFF_PERCENT > 50" | bc -l) )); then
-        #     echo "❌ $AI_LOCAL_PATH 差异超过 50%，打印获取的内容后退出"
+        #     echo "❌ $AI_LOCAL_PATH 差异过大需要手动处理"
         #     echo "----- BEGIN FETCHED AI RAW -----"
         #     cat "$TEMP_AI_RAW"
         #     echo "----- END FETCHED AI RAW -----"
         #     exit 1
         #   fi
         #   if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
-        #     echo "⚙️ $AI_LOCAL_PATH 存在差异，将更新文件。"
+        #     echo "⚙️ $AI_LOCAL_PATH 已更新"
         #     cp "$TEMP_AI_FINAL" "$AI_LOCAL_PATH"
         #     HAS_UPDATE=1
         #   else
-        #     echo "✅ $AI_LOCAL_PATH 无需更新。"
+        #     echo "✅ $AI_LOCAL_PATH 无需更新"
         #   fi
         # fi
 
 
-        # --- 步骤 B: 处理其他独立规则 ---
-        echo ""
-        echo "--- 开始处理其他独立规则 ---"
+        # 处理规则
         declare -A file_map
         file_map["Rules/Apple/Apple.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.list"
         file_map["Rules/Microsoft/Microsoft.list"]="https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.list"
@@ -131,10 +127,9 @@ jobs:
           temp_raw_file="temp_download_raw.list"
           temp_processed_file="temp_download_processed.list"
 
-          echo "开始处理 $local_path ..."
+          echo "Processing $local_path ..."
           curl -sL "$url" -o "$temp_raw_file"
 
-          # 提取原始 NAME, 然后生成新的文件头
           ORIGINAL_NAME=$(grep '^# NAME:' "$temp_raw_file" | sed 's/# NAME: //')
           {
             echo "# NAME: $ORIGINAL_NAME"
@@ -143,11 +138,11 @@ jobs:
             grep -vE '^#|^$' "$temp_raw_file"
           } > "$temp_processed_file"
 
-          # 使用处理过的、干净的文件进行比较
           if [ ! -f "$local_path" ]; then
-            echo "$local_path 不存在，将下载新文件。"
+            echo "$local_path does not exist, downloading new file."
             cp "$temp_processed_file" "$local_path"
             HAS_UPDATE=1
+            UPDATED_FILES="$UPDATED_FILES $local_path"
             continue
           fi
 
@@ -156,33 +151,35 @@ jobs:
           TOTAL_LINES=$(wc -l < "$temp_processed_file")
           if [ $TOTAL_LINES -eq 0 ]; then TOTAL_LINES=1; fi
           DIFF_PERCENT=$(awk "BEGIN {printf \"%.2f\", ($DIFF_LINES/$TOTAL_LINES)*100}")
-          echo "$local_path 差异比例: $DIFF_PERCENT%"
+          echo "$local_path difference ratio: $DIFF_PERCENT%"
 
           if (( $(echo "$DIFF_PERCENT > 50" | bc -l) )); then
-            echo "❌ $local_path 差异超过 50%，打印获取的内容后退出"
+            echo "❌ $local_path has excessive differences, manual handling required"
             echo "----- BEGIN FETCHED RAW -----"
             cat "$temp_raw_file"
             echo "----- END FETCHED RAW -----"
             exit 1
           fi
           if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
-            echo "⚙️ $local_path 存在差异，将更新文件。"
+            echo "⚙️ $local_path has been updated"
             cp "$temp_processed_file" "$local_path"
             HAS_UPDATE=1
+            UPDATED_FILES="$UPDATED_FILES $local_path"
           else
-            echo "✅ $local_path 无需更新。"
+            echo "✅ $local_path no update needed"
           fi
         done
 
         echo "has_update=$HAS_UPDATE" >> $GITHUB_OUTPUT
+        echo "updated_files=$UPDATED_FILES" >> $GITHUB_OUTPUT
         rm -f temp_*.list temp_diff.txt
 
-    # 5. 如果有文件更新，则提交并推送到仓库
+    # 推送到仓库
     - name: Commit and push updates
       if: steps.download-and-compare.outputs.has_update == '1'
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git add Rules/
-        git commit -m "chore(rules): 自动同步并格式化 Clash 规则文件"
+        git commit -m "chore(rules): Automatically sync and format updated rule files: ${{ steps.download-and-compare.outputs.updated_files }}"
         git push
