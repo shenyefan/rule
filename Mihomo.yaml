@@ -27,19 +27,18 @@ proxy-groups:
       - Japan
       - Singapore
       - Korea
-      - DIRECT
       
   - name: PayPal
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/PayPal.png
     type: select
     proxies:
-      - Meow
-      - Land
+      - DIRECT
       - United States
       - Japan
       - Singapore
       - Korea
-      - DIRECT
+      - Meow
+      - Land
 
   - name: Apple
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Apple.png
@@ -52,8 +51,8 @@ proxy-groups:
       - United States
       - Singapore
       - Korea
-      - Land
       - Meow
+      - Land
 
   - name: Microsoft
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Microsoft.png
@@ -66,8 +65,8 @@ proxy-groups:
       - United States
       - Singapore
       - Korea
-      - Land
       - Meow
+      - Land
 
   - name: Google
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Google.png
@@ -95,7 +94,19 @@ proxy-groups:
       - Korea
       - Meow
       - Land
-      - DIRECT
+
+  - name: Twitter
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Twitter.png
+    type: select
+    proxies:
+      - Hong Kong
+      - Taiwan
+      - Japan
+      - United States
+      - Singapore
+      - Korea
+      - Meow
+      - Land
 
   - name: AppleTV
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/AppleTV.png
@@ -109,7 +120,6 @@ proxy-groups:
       - Korea
       - Meow
       - Land
-      - DIRECT
 
   - name: YouTube
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/YouTube.png
@@ -123,7 +133,6 @@ proxy-groups:
       - Korea
       - Meow
       - Land
-      - DIRECT
 
   - name: Netflix
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Netflix.png
@@ -137,7 +146,6 @@ proxy-groups:
       - Korea
       - Meow
       - Land
-      - DIRECT
 
   - name: Disney
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Disney.png
@@ -151,7 +159,6 @@ proxy-groups:
       - Korea
       - Meow
       - Land
-      - DIRECT
 
   - name: Bahamut
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Bahamut.png
@@ -161,7 +168,6 @@ proxy-groups:
       - Hong Kong
       - Meow
       - Land
-      - DIRECT
 
   - name: Bilibili
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Bilibili.png
@@ -306,6 +312,14 @@ rule-providers:
     format: text
     type: http
 
+  Twitter:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Twitter/Twitter.list
+    path: ./ruleset/Twitter/Twitter.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+
   AppleTV:
     url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Media/AppleTV.list
     path: ./ruleset/Media/AppleTV.list
@@ -379,6 +393,7 @@ rules:
   - "RULE-SET,Microsoft,Microsoft"
   - "RULE-SET,Google,Google"
   - "RULE-SET,Telegram,Telegram"
+  - "RULE-SET,Twitter,Twitter"
   - "RULE-SET,AppleTV,AppleTV"
   - "RULE-SET,YouTube,YouTube"
   - "RULE-SET,Netflix,Netflix"
