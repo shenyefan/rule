@@ -9,6 +9,13 @@ proxy-groups:
     type: select
     include-all: true
     filter: (?i)Land -
+    
+  - name: Tailscale
+    icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/LAN.png
+    type: select
+    proxies:
+      - tailscale
+      - DIRECT
       
   - name: AdBlock
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/Ad.png
@@ -256,6 +263,14 @@ proxy-groups:
     tolerance: 50
 
 rule-providers:
+  Tailscale:
+    url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Tailscale/Tailscale.list
+    path: ./ruleset/Tailscale/Tailscale.list
+    behavior: classical
+    interval: 86400
+    format: text
+    type: http
+    
   AdBlock:
     url: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Rules/Ads/Advertising.list
     path: ./ruleset/Ads/Advertising.list
@@ -386,6 +401,7 @@ rule-providers:
 
 rules:
   - "GEOIP,LAN,DIRECT"
+  - "RULE-SET,Tailscale,Tailscale"
   - "RULE-SET,AdBlock,AdBlock"
   - "RULE-SET,AI,AI"
   - "RULE-SET,PayPal,PayPal"
