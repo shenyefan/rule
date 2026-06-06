@@ -14,7 +14,7 @@ proxy-groups:
     icon: https://raw.githubusercontent.com/shenyefan/rule/refs/heads/main/Icon/LAN.png
     type: select
     proxies:
-      - Tailscale
+      - tailscale
       - DIRECT
       
   - name: AdBlock
