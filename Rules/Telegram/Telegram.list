@@ -1,6 +1,6 @@
 # NAME: Telegram
 # REPO: https://github.com/shenyefan/rule
-# UPDATED: 2026-06-29 04:37:14 UTC
+# UPDATED: 2026-06-30 04:30:16 UTC
 DOMAIN,api.imem.app
 DOMAIN,api.swiftgram.app
 DOMAIN-SUFFIX,cdn-telegram.org
