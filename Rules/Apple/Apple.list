@@ -1,6 +1,6 @@
 # NAME: Apple
 # REPO: https://github.com/shenyefan/rule
-# UPDATED: 2026-08-23 03:23:38 UTC
+# UPDATED: 2026-08-24 03:24:45 UTC
 DOMAIN,apple-events.akamaized.net
 DOMAIN,appleworldwidedeveloper.hb-api.omtrdc.net
 DOMAIN,appleworldwidedeveloper.sc.omtrdc.net
@@ -1520,7 +1520,6 @@ DOMAIN-SUFFIX,apple.news
 DOMAIN-SUFFIX,appleenews.com
 DOMAIN-SUFFIX,applemusic.berlin
 DOMAIN-SUFFIX,applemusic.co
-DOMAIN-SUFFIX,applemusic.com
 DOMAIN-SUFFIX,applemusic.com.au
 DOMAIN-SUFFIX,applemusic.hamburg
 DOMAIN-SUFFIX,applemusic.wang
@@ -1553,6 +1552,7 @@ DOMAIN-SUFFIX,iphoto.se
 DOMAIN-SUFFIX,iphoto.wang
 DOMAIN-SUFFIX,musickit.net
 DOMAIN-SUFFIX,wwwapplemusic.com
+DOMAIN-SUFFIX,applemusic.com
 DOMAIN-SUFFIX,apple-dns.net
 DOMAIN-SUFFIX,digicert.com
 DOMAIN-SUFFIX,apple-cloudkit.com
