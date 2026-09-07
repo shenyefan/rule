@@ -1,6 +1,6 @@
 # NAME: PayPal
 # REPO: https://github.com/shenyefan/rule
-# UPDATED: 2026-09-06 03:18:21 UTC
+# UPDATED: 2026-09-07 03:19:43 UTC
 DOMAIN-SUFFIX,account-paypal.info
 DOMAIN-SUFFIX,account-paypal.net
 DOMAIN-SUFFIX,account-paypal.org
