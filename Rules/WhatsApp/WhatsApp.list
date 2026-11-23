@@ -1,6 +1,6 @@
 # NAME: Whatsapp
 # REPO: https://github.com/shenyefan/rule
-# UPDATED: 2026-11-22 10:53:39 UTC
+# UPDATED: 2026-11-23 11:58:57 UTC
 DOMAIN,graph.facebook.com
 DOMAIN-SUFFIX,bintray.com
 DOMAIN-SUFFIX,whatsapp.biz
